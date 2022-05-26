@@ -13,8 +13,9 @@ const PORT = 3030;
 
 const app = express();
 
+app.use(express.static(path.resolve(__dirname, "..", "build")));
 
-app.use("^/app$", (req, res, _) => {
+app.use("^/$", (req, res, _) => {
   fs.readFile(
     path.resolve("build", "index.html"),
     { encoding: "utf-8" },
@@ -24,13 +25,17 @@ app.use("^/app$", (req, res, _) => {
         '<div id="root"></div>',
         `<div id="root">${renderToString(<App />)}</div>`
       );
-    //   console.log(page);
+      //   console.log(page);
       res.status(200).send(page);
     }
   );
 });
 
-app.use(express.static(path.resolve(__dirname, "..", "build")));
+app.use("*", (req, res, _) => {
+  res.status(404).send("Page Not Found");
+});
+
+
 
 app.listen(PORT, () => {
   //   console.log(path.join(__dirname, "build"));
